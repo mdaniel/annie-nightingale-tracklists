@@ -52,11 +52,17 @@ def get_listings(url):
         performers = t.select('[typeof="mo:MusicArtist"]')
         artists = []
         for p in performers:
-            names = p.select('[property="foaf:name"]')
-            if not names:
-                print('An artist without a name?\n%s' % repr(p), file=sys.stderr)
-                continue
-            artists.append(names[0].text)
+            if p.attrs.get('property', '') == 'foaf:name':
+                name = p.text
+            else:
+                names = p.select('[property="foaf:name"]')
+                if not names:
+                    print('An artist without a name?\n%s' % repr(p), file=sys.stderr)
+                    continue
+                name = names[0].text
+                del names
+            artists.append(name)
+            del name
         # have to h3 qualify this because there is dc:title for the Record, too
         title_el = t.select('h3 [property="dc:title"]')
         if title_el:
