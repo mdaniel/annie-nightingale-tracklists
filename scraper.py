@@ -69,21 +69,25 @@ def get_listings(url):
             title = title_el[0].text
         else:
             title = 'Untitled'  # *shrug*
+        record_name = ''
         record_el = t.select('[typeof="mo:Record"]')
         if record_el:
-            record_name = record_el[0].select('[property="dc:title"]').text
-        else:
-            record_name = ''
+            rec_titles = record_el[0].select('[property="dc:title"]')
+            if rec_titles:
+                record_name = rec_titles[0].text
+            else:
+                print('Record with no title?\n%s' % repr(record_el), file=sys.stderr)
         track_el = t.select('.track-number')
+        track_num = None
         if track_el:
-            track_num = track_el[0].text
-        else:
-            track_num = None
+            try:
+                track_num = int(track_el[0].text)
+            except ValueError:
+                print('Bogus track_number text "%s"' % repr(track_el), file=sys.stderr)
         label_el = t.select('.record-label')
+        label = ''
         if label_el:
             label = label_el[0].text
-        else:
-            label = ''
         segment = {
             'artists': u'\n'.join(artists),
             'pid': segment_pid,
