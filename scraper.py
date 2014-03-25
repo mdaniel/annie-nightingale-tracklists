@@ -19,7 +19,7 @@ def get_episodes():
         if re.match(r'\d\d/\d\d/\d\d\d\d', title.text):
             continue
         parent_a = title.parent
-        if 'a' != getattr(parent_a, 'name', '')
+        if 'a' != getattr(parent_a, 'name', ''):
             print('Odd, dc:title has no A parent: %s' % repr(title), file=sys.stderr)
             continue
         epi_href = parent_a.attrs.get('href')
@@ -91,5 +91,5 @@ def main():
     scraperwiki.sqlite.save(unique_keys=['pid'], data=rows)
 
 
-if __name__ = '__main__':
+if __name__ == '__main__':
     main()
