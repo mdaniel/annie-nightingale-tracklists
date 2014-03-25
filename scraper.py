@@ -43,7 +43,7 @@ def get_listings(url):
     results = []
     for idx, t in enumerate(tracks):
         about_segment = t.attrs.get('about')
-        if about_segement:
+        if about_segment:
             segment_pid_ma = re.search(r'/programmes/([^/#]+)', about_segment)
             segment_pid = segment_pid_ma.group(1)
         else:
