@@ -50,7 +50,13 @@ def get_listings(url):
             print('Egad, segment has no @about\n%s' % repr(t), file=sys.stderr)
             segment_pid = '%s-number-%d' % (pid, idx)
         performers = t.select('[typeof="mo:MusicArtist"]')
-        artists = [p.select('[property="foaf:name"]')[0].text for p in performers]
+        artists = []
+        for p in performers:
+            names = p.select('[property="foaf:name"]')
+            if not names:
+                print('An artist without a name?\n%s' % repr(p), file=sys.stderr)
+                continue
+            artists.append(names[0].text)
         # have to h3 qualify this because there is dc:title for the Record, too
         title_el = t.select('h3 [property="dc:title"]')
         if title_el:
