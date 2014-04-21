@@ -7,6 +7,7 @@ import scraperwiki
 from datetime import datetime
 from bs4 import BeautifulSoup
 
+
 def get_episodes():
     broadcasts_url = 'http://www.bbc.co.uk/programmes/b006wkp7/broadcasts'
     html = scraperwiki.scrape(broadcasts_url)
@@ -40,8 +41,30 @@ def get_listings(url):
         print('Whoa, bogus URL format you have there: %s' % repr(url), file=sys.stderr)
         pid = url  # *shrug* but pid is the primary key, so it has to be something
     soup = BeautifulSoup(html)
+    broadcasts = soup.select('[typeof="po:Broadcast"]')
+    # pick a crummy, but non-None default
+    episode_date = datetime.utcnow().isoformat(' ').split(' ')[0]
+    if broadcasts:
+        broad = broadcasts[0]
+        tl_starts = broad.select('[property="timeline:start"]')
+        if tl_starts:
+            tl_start = tl_starts[0]
+            # e.g. "2014-04-19T03:00:00+01:00"
+            episode_dt = tl_start.attrs.get('content', '')
+            if episode_dt:
+                ma = re.match(r'(\d{4}-\d{2}-\d{2})', episode_dt)
+                if ma:
+                    episode_date = ma.group(1)
+                else:
+                    print('Unable to match your episode date: %s' % repr(episode_dt), file=sys.stderr)
+            else:
+                print('Odd, your timeline start has no @content: %s' % repr(tl_start), file=sys.stderr)
+        else:
+            print('Unable to find :start in :Broadcast\n%s' % repr(broad), file=sys.stderr)
+    else:
+        print('Unable to find :Broadcast, so no d/t for you', file=sys.stderr)
+
     tracks = soup.select('[typeof="po:MusicSegment"]')
-    results = []
     for idx, t in enumerate(tracks):
         about_segment = t.attrs.get('about')
         if about_segment:
@@ -90,6 +113,8 @@ def get_listings(url):
         if label_el:
             label = label_el[0].text
         segment = {
+            'episode_date': episode_date,
+            'order': idx,
             'artists': u'\n'.join(artists),
             'pid': segment_pid,
             'episode_pid': pid,
