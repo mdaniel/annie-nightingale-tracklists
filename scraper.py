@@ -4,6 +4,7 @@ import re
 import sys
 import urllib
 import scraperwiki
+from datetime import datetime
 from bs4 import BeautifulSoup
 
 def get_episodes():
@@ -101,6 +102,9 @@ def get_listings(url):
 
 
 def main():
+    # careful: .weekday() is Monday indexed
+    if 5 != datetime.utcnow().weekday():
+        return 0
     rows = []
     for u in get_episodes():
         for row in get_listings(u):
