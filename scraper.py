@@ -134,7 +134,9 @@ def main():
     for u in get_episodes():
         for row in get_listings(u):
             rows.append(row)
-    scraperwiki.sqlite.save(unique_keys=['pid'], data=rows)
+    # turns out the "pid" is the *track* id, not just the broadcast
+    # of that track within an episode
+    scraperwiki.sqlite.save(unique_keys=['episode_pid', 'pid'], data=rows)
 
 
 if __name__ == '__main__':
