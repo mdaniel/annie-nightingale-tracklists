@@ -114,14 +114,14 @@ def get_listings(url):
             label = label_el[0].text
         segment = {
             'episode_date': episode_date,
-            'order': idx,
+            'episode_order': idx,
             'artists': u'\n'.join(artists),
             'pid': segment_pid,
             'episode_pid': pid,
-            'title': title,
+            'track_title': title,
             'record_name': record_name,
             'track_num': track_num,
-            'label': label,
+            'track_label': label,
         }
         yield segment
 
