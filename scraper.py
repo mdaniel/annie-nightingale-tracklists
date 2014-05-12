@@ -128,8 +128,8 @@ def get_listings(url):
 
 def main():
     # careful: .weekday() is Monday indexed
-    if 5 != datetime.utcnow().weekday():
-        return 0
+    #if 5 != datetime.utcnow().weekday():
+    #    return 0
     rows = []
     for u in get_episodes():
         for row in get_listings(u):
