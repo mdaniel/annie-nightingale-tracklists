@@ -9,7 +9,7 @@ from bs4 import BeautifulSoup
 
 
 def get_episodes():
-    broadcasts_url = 'http://www.bbc.co.uk/programmes/b006wkp7/broadcasts'
+    broadcasts_url = 'https://www.bbc.co.uk/programmes/b006wkp7/broadcasts'
     html = scraperwiki.scrape(broadcasts_url)
     soup = BeautifulSoup(html)
     episodes = soup.select('[typeof="po:Episode"]')
